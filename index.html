@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FormDepth — 3D Art & Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --white: #ffffff;
+    --off-white: #f9f8f6;
+    --light: #f0ede8;
+    --muted: #b8b4ad;
+    --mid: #6e6a63;
+    --dark: #1a1916;
+    --accent: #c8a96e;
+    --accent-light: #f5efe4;
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--white);
+    color: var(--dark);
+    font-size: 16px;
+    line-height: 1.7;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.5rem 5vw;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--dark);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--dark); }
+  .nav-cta {
+    font-size: 0.82rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--dark);
+    color: var(--white) !important;
+    padding: 0.55rem 1.4rem;
+    border-radius: 2px;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--accent) !important; color: var(--white) !important; }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 5vw 8vh;
+    background: var(--off-white);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    opacity: 0.045;
+    pointer-events: none;
+  }
+  .hero-bg span {
+    border-right: 1px solid var(--dark);
+    border-bottom: 1px solid var(--dark);
+  }
+  .hero-eyebrow {
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s ease both;
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 9vw, 8rem);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+    color: var(--dark);
+    max-width: 900px;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+  .hero-title em { font-style: italic; color: var(--accent); }
+  .hero-sub {
+    font-size: 1rem;
+    color: var(--mid);
+    max-width: 420px;
+    margin-bottom: 3rem;
+    animation: fadeUp 0.8s 0.2s ease both;
+    font-weight: 300;
+  }
+  .hero-actions {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--dark); color: var(--white);
+    padding: 0.85rem 2rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-primary:hover { background: var(--accent); transform: translateY(-1px); }
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: transparent; color: var(--dark);
+    padding: 0.85rem 2rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 2px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--dark); transform: translateY(-1px); }
+  .hero-scroll {
+    position: absolute; right: 5vw; bottom: 6vh;
+    display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
+    animation: fadeUp 1s 0.5s ease both;
+  }
+  .hero-scroll span {
+    font-size: 0.7rem; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--muted);
+    writing-mode: vertical-rl;
+  }
+  .scroll-line {
+    width: 1px; height: 60px;
+    background: linear-gradient(to bottom, var(--muted), transparent);
+    animation: scrollLine 2s ease infinite;
+  }
+  @keyframes scrollLine {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTIONS */
+  section { padding: 8rem 5vw; }
+  .section-label {
+    font-size: 0.72rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 1.25rem; display: flex; align-items: center; gap: 1rem;
+  }
+  .section-label::before {
+    content: ''; display: block;
+    width: 32px; height: 1px; background: var(--accent);
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3.8rem);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--dark);
+    margin-bottom: 1rem;
+  }
+  .section-title em { font-style: italic; }
+  .section-desc {
+    font-size: 0.95rem; color: var(--mid);
+    max-width: 500px; line-height: 1.8;
+    margin-bottom: 3.5rem;
+    font-weight: 300;
+  }
+
+  /* GALLERY */
+  #gallery { background: var(--white); }
+  .gallery-filter {
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+  }
+  .filter-btn {
+    font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.45rem 1.2rem;
+    border: 1px solid rgba(0,0,0,0.15);
+    background: transparent; color: var(--mid);
+    border-radius: 2px; cursor: pointer;
+    transition: all 0.2s; font-family: var(--font-body);
+  }
+  .filter-btn.active, .filter-btn:hover {
+    background: var(--dark); color: var(--white); border-color: var(--dark);
+  }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.25rem;
+  }
+  .gallery-item {
+    position: relative; overflow: hidden; border-radius: 2px;
+    background: var(--light);
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  .gallery-item:hover { transform: scale(1.015); }
+  .gallery-item.large { grid-column: span 7; aspect-ratio: 4/3; }
+  .gallery-item.medium { grid-column: span 5; aspect-ratio: 3/4; }
+  .gallery-item.wide { grid-column: span 12; aspect-ratio: 21/9; }
+  .gallery-item.half { grid-column: span 6; aspect-ratio: 4/3; }
+  .gallery-placeholder {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0.75rem;
+    position: absolute; inset: 0;
+  }
+  .gp-icon {
+    width: 48px; height: 48px; opacity: 0.2;
+  }
+  .gallery-item-info {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 1.5rem 1.25rem 1.25rem;
+    background: linear-gradient(to top, rgba(20,18,15,0.75), transparent);
+    transform: translateY(8px);
+    opacity: 0;
+    transition: all 0.3s;
+  }
+  .gallery-item:hover .gallery-item-info { opacity: 1; transform: translateY(0); }
+  .gallery-item-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem; font-weight: 400;
+    color: var(--white); margin-bottom: 0.2rem;
+  }
+  .gallery-item-tag {
+    font-size: 0.72rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: rgba(255,255,255,0.6);
+  }
+  /* placeholder color patterns */
+  .g1 { background: #e8e4dd; }
+  .g2 { background: #dde4e8; }
+  .g3 { background: #e4dde8; }
+  .g4 { background: #dde8e1; }
+  .g5 { background: #e8e1dd; }
+  .g6 { background: #e8e8dd; }
+  .placeholder-shape {
+    opacity: 0.15;
+  }
+
+  /* ANIMATION SECTION */
+  #animations { background: var(--off-white); }
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  .video-card {
+    position: relative; border-radius: 2px; overflow: hidden;
+    background: var(--light);
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+  .video-card:hover { transform: translateY(-4px); }
+  .video-thumb {
+    aspect-ratio: 16/9;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .play-btn {
+    width: 56px; height: 56px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .video-card:hover .play-btn { transform: scale(1.1); background: var(--white); }
+  .play-btn svg { width: 20px; height: 20px; margin-left: 3px; }
+  .video-info { padding: 1.25rem; }
+  .video-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem; font-weight: 400; color: var(--dark);
+    margin-bottom: 0.3rem;
+  }
+  .video-meta { font-size: 0.8rem; color: var(--muted); }
+  .video-duration {
+    position: absolute; bottom: 12px; right: 12px;
+    font-size: 0.72rem; letter-spacing: 0.06em;
+    background: rgba(20,18,15,0.7); color: var(--white);
+    padding: 0.2rem 0.5rem; border-radius: 2px;
+  }
+
+  /* SHOP */
+  #shop { background: var(--white); }
+  .shop-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 3rem; flex-wrap: wrap; gap: 1rem;
+  }
+  .shop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 2rem;
+  }
+  .product-card {
+    border: 1px solid rgba(0,0,0,0.07);
+    border-radius: 2px; overflow: hidden;
+    transition: box-shadow 0.3s, transform 0.3s;
+    cursor: pointer;
+  }
+  .product-card:hover {
+    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+    transform: translateY(-3px);
+  }
+  .product-thumb {
+    aspect-ratio: 4/3;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .product-badge {
+    position: absolute; top: 12px; left: 12px;
+    font-size: 0.68rem; letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--dark); color: var(--white);
+    padding: 0.25rem 0.65rem; border-radius: 2px;
+  }
+  .product-badge.new { background: var(--accent); }
+  .product-info { padding: 1.25rem; }
+  .product-category {
+    font-size: 0.72rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+  .product-name {
+    font-family: var(--font-display);
+    font-size: 1.15rem; font-weight: 400; color: var(--dark);
+    margin-bottom: 0.75rem;
+  }
+  .product-footer {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .product-price {
+    font-size: 1.05rem; font-weight: 500; color: var(--dark);
+  }
+  .product-price span { font-size: 0.75rem; color: var(--muted); font-weight: 300; margin-left: 3px; }
+  .buy-btn {
+    font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.45rem 1rem;
+    background: transparent; color: var(--dark);
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 2px; cursor: pointer;
+    font-family: var(--font-body);
+    transition: all 0.2s;
+  }
+  .buy-btn:hover { background: var(--dark); color: var(--white); border-color: var(--dark); }
+
+  /* ABOUT */
+  #about { background: var(--off-white); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem; align-items: center;
+  }
+  .about-visual {
+    aspect-ratio: 3/4;
+    background: var(--light);
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .about-visual::after {
+    content: '';
+    position: absolute; bottom: -20px; right: -20px;
+    width: 100px; height: 100px;
+    border: 2px solid var(--accent);
+    border-radius: 2px;
+    opacity: 0.4;
+  }
+  .about-content .section-label { margin-bottom: 0.75rem; }
+  .about-content .section-title { margin-bottom: 1.5rem; }
+  .about-text { font-size: 0.95rem; color: var(--mid); line-height: 1.9; margin-bottom: 1.5rem; font-weight: 300; }
+  .skills-row {
+    display: flex; flex-wrap: wrap; gap: 0.6rem;
+    margin-top: 2rem;
+  }
+  .skill-tag {
+    font-size: 0.75rem; letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.4rem 1rem;
+    background: var(--white);
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 2px; color: var(--mid);
+  }
+  .stats-row {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 2rem; margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(0,0,0,0.08);
+  }
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 2.5rem; font-weight: 300; color: var(--dark);
+    line-height: 1;
+  }
+  .stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.3rem; letter-spacing: 0.05em; }
+
+  /* CONTACT */
+  #contact { background: var(--dark); }
+  #contact .section-label { color: var(--accent); }
+  #contact .section-label::before { background: var(--accent); }
+  #contact .section-title { color: var(--white); }
+  #contact .section-desc { color: rgba(255,255,255,0.4); }
+  .contact-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+  }
+  .contact-form { display: flex; flex-direction: column; gap: 1.25rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+  .form-group label {
+    font-size: 0.75rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: rgba(255,255,255,0.4);
+  }
+  .form-group input, .form-group textarea, .form-group select {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--white);
+    padding: 0.85rem 1rem;
+    font-size: 0.9rem;
+    font-family: var(--font-body);
+    font-weight: 300;
+    border-radius: 2px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    border-color: var(--accent);
+  }
+  .form-group textarea { resize: vertical; min-height: 130px; }
+  .form-group select option { background: #1a1916; }
+  .submit-btn {
+    align-self: flex-start;
+    background: var(--accent); color: var(--dark);
+    padding: 0.9rem 2.5rem;
+    font-size: 0.82rem; letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: none; border-radius: 2px; cursor: pointer;
+    font-family: var(--font-body); font-weight: 500;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .submit-btn:hover { background: #d9ba80; transform: translateY(-1px); }
+  .contact-info { padding-top: 1rem; }
+  .contact-info-title {
+    font-family: var(--font-display);
+    font-size: 1.8rem; font-weight: 300;
+    color: var(--white); margin-bottom: 2rem;
+  }
+  .contact-item {
+    display: flex; gap: 1rem; align-items: flex-start;
+    margin-bottom: 1.75rem; padding-bottom: 1.75rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .contact-item:last-child { border-bottom: none; }
+  .contact-icon {
+    width: 36px; height: 36px;
+    background: rgba(200,169,110,0.15);
+    border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .contact-icon svg { width: 16px; height: 16px; stroke: var(--accent); fill: none; }
+  .contact-label { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 0.3rem; }
+  .contact-value { font-size: 0.95rem; color: rgba(255,255,255,0.8); font-weight: 300; }
+  .social-row { display: flex; gap: 0.75rem; margin-top: 2.5rem; }
+  .social-btn {
+    width: 40px; height: 40px;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; cursor: pointer; text-decoration: none;
+  }
+  .social-btn:hover { border-color: var(--accent); background: rgba(200,169,110,0.1); }
+  .social-btn svg { width: 16px; height: 16px; stroke: rgba(255,255,255,0.5); fill: none; }
+  .social-btn:hover svg { stroke: var(--accent); }
+
+  /* FOOTER */
+  footer {
+    background: #111009;
+    padding: 2rem 5vw;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-logo {
+    font-family: var(--font-display);
+    font-size: 1.2rem; font-weight: 600; color: rgba(255,255,255,0.5);
+    text-decoration: none;
+  }
+  .footer-logo span { color: var(--accent); }
+  .footer-copy { font-size: 0.78rem; color: rgba(255,255,255,0.25); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .gallery-item.large, .gallery-item.medium { grid-column: span 12; }
+    .gallery-item.half { grid-column: span 12; }
+    nav .nav-links { display: none; }
+    .form-row { grid-template-columns: 1fr; }
+    .hero-scroll { display: none; }
+  }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">Form<span>Depth</span></a>
+  <ul class="nav-links">
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#animations">Animation</a></li>
+    <li><a href="#shop">Shop</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact" class="nav-cta">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg">
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <p class="hero-eyebrow">3D Modeling · Rendering · Animation</p>
+  <h1 class="hero-title">Where <em>form</em><br>meets depth.</h1>
+  <p class="hero-sub">Crafting precise, expressive 3D art — from architectural renders to character animation.</p>
+  <div class="hero-actions">
+    <a href="#gallery" class="btn-primary">View Gallery →</a>
+    <a href="#shop" class="btn-outline">Shop 3D Models</a>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="section-label">Gallery</div>
+  <div class="reveal">
+    <h2 class="section-title">3D <em>Renders</em></h2>
+    <p class="section-desc">A selection of modeling and rendering work. Replace these placeholders with your actual images.</p>
+  </div>
+  <div class="gallery-filter reveal">
+    <button class="filter-btn active" onclick="filterGallery('all', this)">All</button>
+    <button class="filter-btn" onclick="filterGallery('architecture', this)">Architecture</button>
+    <button class="filter-btn" onclick="filterGallery('product', this)">Product</button>
+    <button class="filter-btn" onclick="filterGallery('character', this)">Character</button>
+    <button class="filter-btn" onclick="filterGallery('abstract', this)">Abstract</button>
+  </div>
+  <div class="gallery-grid reveal" id="galleryGrid">
+
+    <div class="gallery-item large g1" data-cat="architecture">
+      <div class="gallery-placeholder">
+        <svg class="gp-icon placeholder-shape" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="20" width="32" height="22" stroke="#1a1916" stroke-width="1.5"/>
+          <path d="M4 20L24 6L44 20" stroke="#1a1916" stroke-width="1.5"/>
+          <rect x="18" y="30" width="12" height="12" stroke="#1a1916" stroke-width="1.5"/>
+        </svg>
+        <span style="font-size:0.75rem;color:#aaa;letter-spacing:0.1em;text-transform:uppercase;">Your Image Here</span>
+      </div>
+      <div class="gallery-item-info">
+        <div class="gallery-item-title">Architectural Render</div>
+        <div class="gallery-item-tag">Architecture · Blender</div>
+      </div>
+    </div>
+
+    <div class="gallery-item medium g2" data-cat="product">
+      <div class="gallery-placeholder">
+        <svg class="gp-icon placeholder-shape" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="24" cy="24" rx="14" ry="20" stroke="#1a1916" stroke-width="1.5"/>
+          <ellipse cx="24" cy="24" rx="14" ry="6" stroke="#1a1916" stroke-width="1.5"/>
+        </svg>
+        <span style="font-size:0.75rem;color:#aaa;letter-spacing:0.1em;text-transform:uppercase;">Your Image Here</span>
+      </div>
+      <div class="gallery-item-info">
+        <div class="gallery-item-title">Product Visualization</div>
+        <div class="gallery-item-tag">Product · Cinema 4D</div>
+      </div>
+    </div>
+
+    <div class="gallery-item half g3" data-cat="character">
+      <div class="gallery-placeholder">
+        <svg class="gp-icon placeholder-shape" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="14" r="8" stroke="#1a1916" stroke-width="1.5"/>
+          <path d="M10 42C10 33.163 16.268 26 24 26C31.732 26 38 33.163 38 42" stroke="#1a1916" stroke-width="1.5"/>
+        </svg>
+        <span style="font-size:0.75rem;color:#aaa;letter-spacing:0.1em;text-transform:uppercase;">Your Image Here</span>
+      </div>
+      <div class="gallery-item-info">
+        <div class="gallery-item-title">Character Model</div>
+        <div class="gallery-item-tag">Character · Zbrush</div>
+      </div>
+    </div>
+
+    <div class="gallery-item half g4" data-cat="abstract">
+      <div class="gallery-placeholder">
+        <svg class="gp-icon placeholder-shape" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="24,4 44,40 4,40" stroke="#1a1916" stroke-width="1.5" fill="none"/>
+          <polygon points="24,14 36,36 12,36" stroke="#1a1916" stroke-width="1.5" fill="none"/>
+        </svg>
+        <span style="font-size:0.75rem;color:#aaa;letter-spacing:0.1em;text-transform:uppercase;">Your Image Here</span>
+      </div>
+      <div class="gallery-item-info">
+        <div class="gallery-item-title">Abstract Geometry</div>
+        <div class="gallery-item-tag">Abstract · Houdini</div>
+      </div>
+    </div>
+
+    <div class="gallery-item wide g5" data-cat="architecture">
+      <div class="gallery-placeholder">
+        <svg class="gp-icon placeholder-shape" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="24" width="10" height="18" stroke="#1a1916" stroke-width="1.5"/>
+          <rect x="19" y="16" width="10" height="26" stroke="#1a1916" stroke-width="1.5"/>
+          <rect x="34" y="20" width="10" height="22" stroke="#1a1916" stroke-width="1.5"/>
+        </svg>
+        <span style="font-size:0.75rem;color:#aaa;letter-spacing:0.1em;text-transform:uppercase;">Wide Panoramic Render</span>
+      </div>
+      <div class="gallery-item-info">
+        <div class="gallery-item-title">City Panorama</div>
+        <div class="gallery-item-tag">Architecture · Unreal Engine</div>
+      </div>
+    </div>
+
+    <div class="gallery-item medium g6" data-cat="product">
+      <div class="gallery-placeholder">
+        <svg class="gp-icon placeholder-shape" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="32" height="32" rx="4" stroke="#1a1916" stroke-width="1.5"/>
+          <rect x="16" y="16" width="16" height="16" rx="2" stroke="#1a1916" stroke-width="1.5"/>
+        </svg>
+        <span style="font-size:0.75rem;color:#aaa;letter-spacing:0.1em;text-transform:uppercase;">Your Image Here</span>
+      </div>
+      <div class="gallery-item-info">
+        <div class="gallery-item-title">Product Render</div>
+        <div class="gallery-item-tag">Product · Keyshot</div>
+      </div>
+    </div>
+
+    <div class="gallery-item large g2" data-cat="character">
+      <div class="gallery-placeholder">
+        <svg class="gp-icon placeholder-shape" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="24" r="16" stroke="#1a1916" stroke-width="1.5"/>
+          <path d="M14 24C14 18.477 18.477 14 24 14" stroke="#1a1916" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M34 24C34 29.523 29.523 34 24 34" stroke="#1a1916" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span style="font-size:0.75rem;color:#aaa;letter-spacing:0.1em;text-transform:uppercase;">Your Image Here</span>
+      </div>
+      <div class="gallery-item-info">
+        <div class="gallery-item-title">Creature Design</div>
+        <div class="gallery-item-tag">Character · Blender</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ANIMATIONS -->
+<section id="animations">
+  <div class="section-label">Animations</div>
+  <div class="reveal">
+    <h2 class="section-title"><em>Motion</em> & Animation</h2>
+    <p class="section-desc">Dynamic 3D animations showcasing movement, storytelling, and technical depth. Add your video links below.</p>
+  </div>
+  <div class="video-grid reveal">
+
+    <div class="video-card" onclick="alert('Replace this with your actual video embed or link!')">
+      <div class="video-thumb g1">
+        <div class="play-btn">
+          <svg viewBox="0 0 20 20" fill="var(--dark)" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.5 5L15.5 10L6.5 15V5Z"/>
+          </svg>
+        </div>
+        <span class="video-duration">0:42</span>
+      </div>
+      <div class="video-info">
+        <div class="video-title">Architectural Walkthrough</div>
+        <div class="video-meta">Blender · Camera Animation</div>
+      </div>
+    </div>
+
+    <div class="video-card" onclick="alert('Replace this with your actual video embed or link!')">
+      <div class="video-thumb g3">
+        <div class="play-btn">
+          <svg viewBox="0 0 20 20" fill="var(--dark)" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.5 5L15.5 10L6.5 15V5Z"/>
+          </svg>
+        </div>
+        <span class="video-duration">1:15</span>
+      </div>
+      <div class="video-info">
+        <div class="video-title">Character Rig Demo</div>
+        <div class="video-meta">Maya · Character Animation</div>
+      </div>
+    </div>
+
+    <div class="video-card" onclick="alert('Replace this with your actual video embed or link!')">
+      <div class="video-thumb g5">
+        <div class="play-btn">
+          <svg viewBox="0 0 20 20" fill="var(--dark)" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.5 5L15.5 10L6.5 15V5Z"/>
+          </svg>
+        </div>
+        <span class="video-duration">0:28</span>
+      </div>
+      <div class="video-info">
+        <div class="video-title">Product Animation</div>
+        <div class="video-meta">Cinema 4D · Motion Graphics</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="reveal" style="margin-top:2.5rem;text-align:center;">
+    <p style="font-size:0.85rem;color:var(--muted);">📌 Tip: Embed your Vimeo or YouTube links directly inside the video cards above.</p>
+  </div>
+</section>
+
+<!-- SHOP -->
+<section id="shop">
+  <div class="shop-header reveal">
+    <div>
+      <div class="section-label">Shop</div>
+      <h2 class="section-title">Buy 3D <em>Models</em></h2>
+      <p class="section-desc" style="margin-bottom:0;">Download ready-to-use models for your projects.</p>
+    </div>
+    <a href="#contact" class="btn-outline">Custom Order →</a>
+  </div>
+  <div class="shop-grid reveal">
+
+    <div class="product-card">
+      <div class="product-thumb g1">
+        <span class="product-badge new">New</span>
+        <div style="opacity:0.15;">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="12" y="28" width="40" height="28" stroke="#1a1916" stroke-width="1.5"/>
+            <path d="M6 28L32 8L58 28" stroke="#1a1916" stroke-width="1.5"/>
+          </svg>
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-category">Architecture</div>
+        <div class="product-name">Modern Villa — Exterior</div>
+        <div class="product-footer">
+          <div class="product-price">$24 <span>USD</span></div>
+          <button class="buy-btn">Buy Now</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-thumb g3">
+        <span class="product-badge">Bestseller</span>
+        <div style="opacity:0.15;">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="20" stroke="#1a1916" stroke-width="1.5"/>
+            <circle cx="32" cy="32" r="10" stroke="#1a1916" stroke-width="1.5"/>
+            <circle cx="32" cy="32" r="3" fill="#1a1916"/>
+          </svg>
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-category">Character</div>
+        <div class="product-name">Sci-Fi Character Rig</div>
+        <div class="product-footer">
+          <div class="product-price">$49 <span>USD</span></div>
+          <button class="buy-btn">Buy Now</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-thumb g2">
+        <div style="opacity:0.15;">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="16" y="16" width="32" height="32" stroke="#1a1916" stroke-width="1.5"/>
+            <rect x="22" y="22" width="20" height="20" stroke="#1a1916" stroke-width="1.5"/>
+          </svg>
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-category">Product</div>
+        <div class="product-name">Minimalist Chair Set</div>
+        <div class="product-footer">
+          <div class="product-price">$18 <span>USD</span></div>
+          <button class="buy-btn">Buy Now</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-thumb g4">
+        <span class="product-badge new">New</span>
+        <div style="opacity:0.15;">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="32,8 56,52 8,52" stroke="#1a1916" stroke-width="1.5" fill="none"/>
+          </svg>
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-category">Abstract</div>
+        <div class="product-name">Geometric Pack Vol.1</div>
+        <div class="product-footer">
+          <div class="product-price">$12 <span>USD</span></div>
+          <button class="buy-btn">Buy Now</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="reveal" style="margin-top:2rem;text-align:center;">
+    <p style="font-size:0.85rem;color:var(--muted);">📌 Tip: Link "Buy Now" buttons to your <strong>Gumroad</strong> or <strong>ArtStation</strong> store listings.</p>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-visual reveal">
+      <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.15;">
+        <circle cx="40" cy="28" r="16" stroke="#1a1916" stroke-width="1.5"/>
+        <path d="M14 72C14 57.088 25.193 45 40 45C54.807 45 66 57.088 66 72" stroke="#1a1916" stroke-width="1.5"/>
+      </svg>
+      <span style="font-size:0.75rem;color:#aaa;letter-spacing:0.1em;text-transform:uppercase;margin-top:1rem;">Add Your Photo</span>
+    </div>
+    <div class="about-content">
+      <div class="section-label reveal">About</div>
+      <h2 class="section-title reveal">3D art that <em>speaks</em> for itself.</h2>
+      <p class="about-text reveal">I'm a passionate 3D artist specializing in photorealistic modeling, rendering, and character animation. With a deep love for detail and form, I create work that bridges technical precision and artistic vision.</p>
+      <p class="about-text reveal">From architectural visualization to character sculpting, each project is crafted with intention — built to inspire, sell, and endure.</p>
+      <div class="skills-row reveal">
+        <span class="skill-tag">Blender</span>
+        <span class="skill-tag">Cinema 4D</span>
+        <span class="skill-tag">Maya</span>
+        <span class="skill-tag">Zbrush</span>
+        <span class="skill-tag">Houdini</span>
+        <span class="skill-tag">Unreal Engine</span>
+        <span class="skill-tag">V-Ray</span>
+        <span class="skill-tag">Keyshot</span>
+      </div>
+      <div class="stats-row reveal">
+        <div>
+          <div class="stat-num">50+</div>
+          <div class="stat-label">Projects</div>
+        </div>
+        <div>
+          <div class="stat-num">30+</div>
+          <div class="stat-label">Models sold</div>
+        </div>
+        <div>
+          <div class="stat-num">5+</div>
+          <div class="stat-label">Years experience</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label reveal">Contact</div>
+  <h2 class="section-title reveal">Let's <em>create</em> together.</h2>
+  <p class="section-desc reveal">Have a project in mind or want a custom 3D model? Get in touch.</p>
+  <div class="contact-grid">
+    <form class="contact-form reveal" onsubmit="handleSubmit(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" placeholder="Your name" />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" placeholder="your@email.com" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Subject</label>
+        <select>
+          <option value="">Select a topic...</option>
+          <option>Custom 3D Model</option>
+          <option>Animation Project</option>
+          <option>Rendering Service</option>
+          <option>Licensing</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea placeholder="Tell me about your project..."></textarea>
+      </div>
+      <button type="submit" class="submit-btn">Send Message →</button>
+    </form>
+    <div class="contact-info reveal">
+      <div class="contact-info-title">Other ways to reach me.</div>
+      <div class="contact-item">
+        <div class="contact-icon">
+          <svg viewBox="0 0 24 24" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 8L10.89 13.26C11.2188 13.4793 11.6049 13.5963 12 13.5963C12.3951 13.5963 12.7812 13.4793 13.11 13.26L21 8M5 19H19C19.5304 19 20.0391 18.7893 20.4142 18.4142C20.7893 18.0391 21 17.5304 21 17V7C21 6.46957 20.7893 5.96086 20.4142 5.58579C20.0391 5.21071 19.5304 5 19 5H5C4.46957 5 3.96086 5.21071 3.58579 5.58579C3.21071 5.96086 3 6.46957 3 7V17C3 17.5304 3.21071 18.0391 3.58579 18.4142C3.96086 18.7893 4.46957 19 5 19Z" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="contact-label">Email</div>
+          <div class="contact-value">hello@formdepth.com</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">
+          <svg viewBox="0 0 24 24" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.657 16.657L13.414 20.9C13.039 21.2746 12.5306 21.4851 12.0005 21.4851C11.4704 21.4851 10.962 21.2746 10.587 20.9L6.343 16.657C5.22422 15.5381 4.46234 14.1127 4.15369 12.5608C3.84504 11.009 4.00349 9.40047 4.60901 7.93868C5.21452 6.4769 6.2399 5.22749 7.55548 4.34846C8.87107 3.46942 10.4178 3.00024 12 3.00024C13.5822 3.00024 15.1289 3.46942 16.4445 4.34846C17.7601 5.22749 18.7855 6.4769 19.391 7.93868C19.9965 9.40047 20.155 11.009 19.8463 12.5608C19.5377 14.1127 18.7758 15.5381 17.657 16.657Z" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 13C13.1046 13 14 12.1046 14 11C14 9.89543 13.1046 9 12 9C10.8954 9 10 9.89543 10 11C10 12.1046 10.8954 13 12 13Z" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="contact-label">Based in</div>
+          <div class="contact-value">Your City, Country</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">
+          <svg viewBox="0 0 24 24" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="12 6 12 12 16 14" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="contact-label">Availability</div>
+          <div class="contact-value">Open for freelance work</div>
+        </div>
+      </div>
+      <div class="social-row">
+        <a href="#" class="social-btn" title="ArtStation">
+          <svg viewBox="0 0 24 24" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 17L6.5 9.5L11 17H2Z" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M7 13L9.5 9L12 13H7Z" fill="none"/>
+            <path d="M13.5 7L22 17H5L7 13.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#" class="social-btn" title="Behance">
+          <svg viewBox="0 0 24 24" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 12H12C12 12 15 12 15 9C15 6 12 6 12 6H3V18H13C13 18 17 18 17 14.5C17 11 13 11 13 11" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M18 9H22M18 15H22M19 9C19 9 19 7 21 7C23 7 23 9 23 9" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#" class="social-btn" title="Instagram">
+          <svg viewBox="0 0 24 24" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="12" r="4" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="17.5" cy="6.5" r="0.5" fill="rgba(255,255,255,0.5)"/>
+          </svg>
+        </a>
+        <a href="#" class="social-btn" title="LinkedIn">
+          <svg viewBox="0 0 24 24" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 8C17.5913 8 19.1174 8.63214 20.2426 9.75736C21.3679 10.8826 22 12.4087 22 14V21H18V14C18 13.4696 17.7893 12.9609 17.4142 12.5858C17.0391 12.2107 16.5304 12 16 12C15.4696 12 14.9609 12.2107 14.5858 12.5858C14.2107 12.9609 14 13.4696 14 14V21H10V14C10 12.4087 10.6321 10.8826 11.7574 9.75736C12.8826 8.63214 14.4087 8 16 8Z" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="2" y="9" width="4" height="12" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="4" cy="4" r="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#hero" class="footer-logo">Form<span>Depth</span></a>
+  <p class="footer-copy">© 2026 FormDepth. All rights reserved.</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Gallery filter
+  function filterGallery(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.gallery-item').forEach(item => {
+      const show = cat === 'all' || item.dataset.cat === cat;
+      item.style.display = show ? '' : 'none';
+    });
+  }
+
+  // Contact form
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.submit-btn');
+    btn.textContent = 'Message Sent ✓';
+    btn.style.background = '#4a7c5a';
+    setTimeout(() => { btn.textContent = 'Send Message →'; btn.style.background = ''; }, 3000);
+  }
+</script>
+</body>
+</html>
